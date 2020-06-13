@@ -1,13 +1,23 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{'collapse':collapse}" title="回到主页">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+        <img v-if="logo" src="@/assets/images/logo.png" class="sidebar-logo collapse-logo">
+        <!-- <h1 v-else class="sidebar-title">
+          {{ title }}
+        </h1> -->
+        <div v-else class="sidebar-title">
+          <span>{{ title }}</span>
+        </div>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+        <img v-if="logo" src="@/assets/images/logo.png" class="sidebar-logo">
+        <!-- <h1 class="sidebar-title">
+          {{ title }}
+        </h1> -->
+        <div class="sidebar-title">
+          <span>{{ title }}</span>
+        </div>
       </router-link>
     </transition>
   </div>
@@ -24,8 +34,8 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Element Admin',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: '后台管理系统',
+      logo: true
     }
   }
 }
@@ -50,15 +60,21 @@ export default {
   text-align: center;
   overflow: hidden;
 
+  .collapse-logo {
+    width: 30px !important;
+    height: 25px !important;
+    padding-right: 0!important;
+  }
+
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 25px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 15px;
     }
 
     & .sidebar-title {
@@ -70,6 +86,10 @@ export default {
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
+      span {
+        padding-left: 15px;
+        border-left: 1px solid #fff;
+      }
     }
   }
 

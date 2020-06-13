@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="!item.hidden" class="menu-wrapper">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
@@ -26,7 +26,7 @@
 
 <script>
 import path from 'path'
-import { isExternal } from '@/utils/validate'
+import { isExternal } from '@/assets/utils'
 import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
@@ -69,9 +69,9 @@ export default {
       })
 
       // When there is only one child router, the child router is displayed by default
-      if (showingChildren.length === 1) {
-        return true
-      }
+      // if (showingChildren.length === 1) { //只有一个子菜单的情况
+      //   return true
+      // }
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
@@ -93,3 +93,33 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+@import '~@/styles/mixin';
+.openSidebar .el-submenu__title {
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+  span {
+    line-height: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 50px;
+  }
+}
+.menu-wrapper {
+  .el-submenu__title {
+    padding-left: 20px;
+    .el-submenu__icon-arrow {
+      right: 35px;
+    }
+  }
+  .el-menu-item {
+    padding-left: 20px;
+  }
+  .nest-menu .el-menu-item {
+    padding-left: 40px;
+  }
+}
+
+</style>
+

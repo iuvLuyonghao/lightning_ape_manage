@@ -8,27 +8,21 @@
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
-      <right-panel v-if="showSettings">
-        <settings />
-      </right-panel>
     </div>
   </div>
 </template>
 
 <script>
-import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 
 export default {
   name: 'Layout',
   components: {
-    AppMain,
     Navbar,
-    RightPanel,
-    Settings,
     Sidebar,
+    AppMain,
     TagsView
   },
   mixins: [ResizeMixin],
@@ -36,7 +30,6 @@ export default {
     ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
-      showSettings: state => state.settings.showSettings,
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader
     }),
@@ -58,21 +51,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/mixin.scss";
-  @import "~@/styles/variables.scss";
+  @import '~@/styles/mixin';
+  @import '~@/styles/variables';
 
   .app-wrapper {
     @include clearfix;
     position: relative;
     height: 100%;
     width: 100%;
-
-    &.mobile.openSidebar {
+    &.mobile.openSidebar{
       position: fixed;
       top: 0;
     }
   }
-
   .drawer-bg {
     background: #000;
     opacity: 0.3;

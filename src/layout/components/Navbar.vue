@@ -1,43 +1,23 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-      </template>
-
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown class="avatar-container" trigger="click" @visible-change="triggerFlag=!triggerFlag">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <svg-icon icon-class="user" class="user-avatar" />
+          <i :class="triggerFlag ? 'el-icon-caret-bottom rotate' : 'el-icon-caret-bottom'" />
         </div>
-        <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
-          </router-link>
-          <router-link to="/">
-            <el-dropdown-item>Dashboard</el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          <el-dropdown-item class="user-info-item">
+            <div class="user-info">
+              <span>{{ userName }}</span>
+            </div>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <span style="display:block;" @click="logout">退出账户</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -46,41 +26,63 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    ErrorLog,
-    Screenfull,
-    SizeSelect,
-    Search
+    Hamburger
+  },
+  data() {
+    return {
+      triggerFlag: false
+    }
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
-      'device'
-    ])
+      'avatar'
+    ]),
+    ...mapState({
+      userName: state => state.user.name
+    })
   },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      await this.$store.dispatch('LogOut')
+      await this.$store.dispatch('tagsView/delAllViews')
+      this.$router.push('/login')
     }
   }
 }
 </script>
+
+<style lang="scss">
+.user-dropdown {
+  text-align: center;
+  font-size: 14px;
+  border-radius: 2px;
+  border: 0;
+  padding: 0;
+  .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover {
+    border-radius: 2px;
+  }
+  .user-info-item {
+    cursor: unset;
+    text-align: center;
+    border-radius: 2px;
+    &:focus, &:not(.is-disabled):hover {
+      background-color: #FFF;
+      color: #333;
+    }
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 .navbar {
@@ -91,7 +93,7 @@ export default {
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 46px;/* no*/
     height: 100%;
     float: left;
     cursor: pointer;
@@ -107,15 +109,11 @@ export default {
     float: left;
   }
 
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
-  }
-
   .right-menu {
     float: right;
     height: 100%;
     line-height: 50px;
+    padding-right: 20px;
 
     &:focus {
       outline: none;
@@ -143,22 +141,36 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 9px;
         position: relative;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           border-radius: 10px;
         }
-
+        .rotate {
+          transition: All 0.4s ease-in-out;
+          -webkit-transition: All 0.4s ease-in-out;
+          -moz-transition: All 0.4s ease-in-out;
+          -o-transition: All 0.4s ease-in-out;
+          transform:rotate(180deg);
+          -ms-transform:rotate(180deg); 	/* IE 9 */
+          -moz-transform:rotate(180deg); 	/* Firefox */
+          -webkit-transform:rotate(180deg); /* Safari ? Chrome */
+          -o-transform:rotate(180deg);
+        }
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+          right: -18px;
+          top: 12px;
+          font-size: 10px;
+          transition: All 0.4s ease-in-out;
+          -webkit-transition: All 0.4s ease-in-out;
+          -moz-transition: All 0.4s ease-in-out;
+          -o-transition: All 0.4s ease-in-out;
         }
       }
     }
